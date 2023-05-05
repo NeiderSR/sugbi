@@ -28,7 +28,7 @@
   [fields]
   (let [db-books                (db/get-books {}) 
         isbns                   (map :isbn db-books)
-        avl-per-book            (map (fn [x] (>= (db/available-books {:isbn x}))) isbns)
+        avl-per-book            (map (fn [x] (>= (db/available-books {:isbn x}) 1)) isbns)
         avl-map                 (map (fn [x] {:available x}) avl-per-book)
         availability            (mapv merge db-books avl-map)
         open-library-book-infos (olb/multiple-book-info isbns fields)]
@@ -42,7 +42,7 @@
   [title fields]
   (let [db-book-infos           (db/matching-books title)
         isbns                   (map :isbn db-book-infos)
-        avl-per-book            (map (fn [x] (>= (db/available-books {:isbn x}))) isbns)
+        avl-per-book            (map (fn [x] (>= (db/available-books {:isbn x}) 1)) isbns)
         avl-map                 (map (fn [x] {:available x}) avl-per-book)
         availability            (mapv merge db-book-infos avl-map)
         open-library-book-infos (olb/multiple-book-info isbns fields)]

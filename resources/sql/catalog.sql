@@ -31,11 +31,29 @@ insert into catalog.book_item (book_id) values (:book_id) returning *;
 insert into catalog.lending (book_item_id, user_id, init_date, end_date)
 values (:book-item-id, :user-id, current_timestamp, current_timestamp + interval '2 weeks') returning *;
 
+-- :name get-loan :? :1
+select * from catalog.lending where lending_id = :lending-id
+
 -- :name remove-lending! :! :n
 delete from catalog.lending where user_id = :user-id and book_item_id = :book-item-id;
+
+-- :name remove-lending-id! :! :n
+delete from catalog.lending where lending_id = :lending-id
+
+-- :name belong-to-user? :? :1
+select true from catalog.lending where lending_id = :lending-id and user_id = :user-id
 
 -- :name retr-borrowed :? :*
 select user_id, catalog.book_item.book_item_id, title, end_date from catalog.lending
 join catalog.book_item on catalog.lending.book_item_id = catalog.book_item.book_item_id
 join catalog.book on catalog.book_item.book_id = catalog.book.book_id
 where user_id = :user-id;
+
+-- :name get-user-lendings :? :*
+select lending_id, init_date, end_date from catalog.lending
+join catalog.book_item on catalog.lending.book_item_id = catalog.book_item.book_item_id
+join catalog.book on catalog.book_item.book_id = catalog.book.book_id
+where user_id = :user-id;
+
+-- :name find-user :? :*
+select user_id from catalog.lending where user_id = :user-id
