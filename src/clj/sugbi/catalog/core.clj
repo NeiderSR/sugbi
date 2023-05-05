@@ -40,12 +40,12 @@
 
 (defn enriched-search-books-by-title
   [title fields]
-  (let [db-book-infos           (db/matching-books title) 
+  (let [db-book-infos           (db/matching-books title)
         isbns                   (map :isbn db-book-infos)
         avl-per-book            (map (fn [x] (>= (db/available-books {:isbn x}))) isbns)
         avl-map                 (map (fn [x] {:available x}) avl-per-book)
-        availability            (mapv merge db-books avl-map)
-        open-library-book-infos (olb/multiple-book-info isbns fields)] 
+        availability            (mapv merge db-book-infos avl-map)
+        open-library-book-infos (olb/multiple-book-info isbns fields)]
     (merge-on-key
      :isbn
      availability
@@ -68,4 +68,3 @@
   "Retrieves all borrowed book from the specified user."
   [user-id]
   (db/retr-borrowed {:user-id user-id}))
-(get-book-lendings 1)
